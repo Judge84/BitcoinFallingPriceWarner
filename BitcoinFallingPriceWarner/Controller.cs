@@ -47,7 +47,7 @@ namespace BitcoinFallingPriceWarner
         /// 
         /// </summary>
         /// <param name="url"></param>
-        public async Task ReadWebsite(string url)
+        public async Task<bool> ReadWebsite(string url)
         {
             Logger.Log(Logger.LogLevel.Trace, "Controller", $"ReadWebsite: {url}");
 
@@ -62,7 +62,7 @@ namespace BitcoinFallingPriceWarner
 
             readLastPriceAndDecide(folderPath, filename, Settings.AmountDifferenzForSendingWarning);
 
-
+            return true; 
 
         }
 
@@ -108,10 +108,13 @@ namespace BitcoinFallingPriceWarner
 
             Logger.Log(Logger.LogLevel.Trace, "readLastPriceAndDecide",
                 $"10. letzter Wert:\t {tenthLastDatetime} \t\t {data[tenthLastDatetime]}");
+
             Logger.Log(Logger.LogLevel.Warn, "readLastPriceAndDecide",
                 $"    letzter Wert:\t {lastDatetime} \t\t {data[lastDatetime]}");
 
-            if(data[tenthLastDatetime]+ difference <  data[lastDatetime])
+            var calculatedDifference = data[lastDatetime] - data[tenthLastDatetime]; 
+
+            if(calculatedDifference + difference < 0)
             {
                 Mailer.sendEmail(
                 $"VERKAUFEN!!!!!!\n" +

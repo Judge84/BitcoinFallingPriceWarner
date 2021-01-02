@@ -52,9 +52,9 @@ namespace BitcoinFallingPriceWarner
         public static async void BitcoinFallingPriceWarner(Settings settings)
         {
             Controller c = new Controller(settings, folderFromExe, filename);
-            await c.ReadWebsite(settings.UrlToGetInformation);
+            c.ReadWebsite(settings.UrlToGetInformation).Wait();
             //if read then dispose
-            c.closeAndDisposeAll(); 
+            c.closeAndDisposeAll();
         }
 
 
