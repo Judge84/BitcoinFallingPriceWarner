@@ -47,7 +47,7 @@ namespace BitcoinFallingPriceWarner
         /// 
         /// </summary>
         /// <param name="url"></param>
-        public async Task<bool> ReadWebsite(string url)
+        public async Task ReadWebsite(string url)
         {
             Logger.Log(Logger.LogLevel.Trace, "Controller", $"ReadWebsite: {url}");
 
@@ -59,14 +59,14 @@ namespace BitcoinFallingPriceWarner
             writeToLog(lastPrices);
 
             savePrice(lastPrices, folderPath, filename);
+            //if the decision is made, go on
+            readLastPriceAndDecide(folderPath, filename, Settings.AmountDifferenceForSendingWarning).Wait();
 
-            readLastPriceAndDecide(folderPath, filename, Settings.AmountDifferenzForSendingWarning);
-
-            return true; 
+           
 
         }
 
-        private async void readLastPriceAndDecide(string docPath, string filename, double difference)
+        private async Task readLastPriceAndDecide(string docPath, string filename, double difference)
         {
             
             SortedList<DateTime, Double> data = new SortedList<DateTime, double>();
@@ -109,13 +109,14 @@ namespace BitcoinFallingPriceWarner
             Logger.Log(Logger.LogLevel.Trace, "readLastPriceAndDecide",
                 $"10. letzter Wert:\t {tenthLastDatetime} \t\t {data[tenthLastDatetime]}");
 
-            Logger.Log(Logger.LogLevel.Warn, "readLastPriceAndDecide",
+            Logger.Log(Logger.LogLevel.Trace, "readLastPriceAndDecide",
                 $"    letzter Wert:\t {lastDatetime} \t\t {data[lastDatetime]}");
 
             var calculatedDifference = data[lastDatetime] - data[tenthLastDatetime]; 
 
             if(calculatedDifference + difference < 0)
             {
+                Logger.Log(Logger.LogLevel.Warn, "readLastPriceAndDecide", $" calculatedDifference is {calculatedDifference}, so send Email");
                 Mailer.sendEmail(
                 $"VERKAUFEN!!!!!!\n" +
                 $"10.letzter Wert:\t { tenthLastDatetime} \t\t { data[tenthLastDatetime]}\n" +
@@ -125,7 +126,7 @@ namespace BitcoinFallingPriceWarner
             }
             else
             {
-                Logger.Log(Logger.LogLevel.Trace, "readLastPriceAndDecide", $"OK");
+                Logger.Log(Logger.LogLevel.Trace, "readLastPriceAndDecide", $" calculatedDifference is {calculatedDifference}");
             }
 
 

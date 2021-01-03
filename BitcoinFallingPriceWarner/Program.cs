@@ -26,7 +26,7 @@ namespace BitcoinFallingPriceWarner
             do
             {
                 cki = Console.ReadKey();
-                c.ReadWebsite(settings.UrlToGetInformation);
+                c.ReadWebsite(settings.UrlToGetInformation).Wait();
 
             } while (cki.Key != ConsoleKey.Escape);
 
@@ -53,7 +53,7 @@ namespace BitcoinFallingPriceWarner
         {
             Controller c = new Controller(settings, folderFromExe, filename);
             c.ReadWebsite(settings.UrlToGetInformation).Wait();
-            //if read then dispose
+            //if read ready then dispose
             c.closeAndDisposeAll();
         }
 

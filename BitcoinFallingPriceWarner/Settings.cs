@@ -8,7 +8,7 @@ namespace BitcoinFallingPriceWarner
     {
         public int TimerInMinutes { get; set; }
         public string UrlToGetInformation { get; set; }
-        public int AmountDifferenzForSendingWarning { get; set; }
+        public int AmountDifferenceForSendingWarning { get; set; }
         public SMTPserverSettings SMTPserver { get; set; }
         public string MailReceipientForWarning { get; set; }
 
